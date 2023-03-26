@@ -12,9 +12,18 @@ export class ReviewPostResponseDto extends ReviewPostSimpleResponseDto {
   get replies(): Record<string, any>[] {
     const mainReplies = this._replies.filter((reply) => reply.level === 0);
     return mainReplies.map((mainReply) => {
-      const levelReplies = this._replies.filter((reply) => reply.mainReplyIdx === mainReply.idx);
+      const levelReplies = this._replies.reduce((acc, cur) => {
+        if (cur.mainReplyIdx === mainReply.idx) {
+          acc.push({
+            ...cur,
+            pinReplyCount: cur.pinReplies.length,
+          });
+        }
+        return acc;
+      }, [] as any[]);
       return {
         ...mainReply,
+        pinReplyCount: mainReply.pinReplies.length,
         levelReplies,
       };
     });
