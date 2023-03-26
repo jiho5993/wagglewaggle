@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { PinReply } from '../pin-reply/pin-reply.entity';
 import { ReplyReport } from '../reply-report/reply-report.entity';
 import { ReviewPost } from '../review-post/review-post.entity';
 import { User } from '../user/user.entity';
@@ -35,4 +36,7 @@ export class Reply {
 
   @OneToMany(() => ReplyReport, (replyReport) => replyReport.reply)
   reports: ReplyReport[];
+
+  @OneToMany(() => PinReply, (pinReply) => pinReply.reply)
+  pinReplies: PinReply[];
 }
