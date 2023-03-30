@@ -7,6 +7,7 @@ import { PlaceType } from '../app/app.constant';
 import { ListFilterQueryDto } from '../app/app.dto';
 import { PlaceEntity } from '../place/entity/place.entity';
 import { ReviewPostStatus } from '@lib/entity/review-post/review-post.constant';
+import { UserEntity } from '../user/entity/user.entity';
 
 @Injectable()
 export class ReviewPostRepository {
@@ -43,6 +44,25 @@ export class ReviewPostRepository {
       return manager.update(ReviewPost, where, set);
     }
     return this.repository.update(where, set);
+  }
+
+  async getReviewPostByIdx(user: UserEntity, reviewPostIdx: number): Promise<ReviewPostEntity | undefined> {
+    const queryBuilder = this.createQueryBuilder()
+      .leftJoinAndSelect('reviewPost.replies', 'reply')
+      .leftJoinAndSelect('reply.user', 'replyUser')
+      .leftJoinAndSelect('reply.pinReplies', 'pinReply')
+      .leftJoinAndSelect('reviewPost.reviewPostImages', 'reviewPostImage')
+      .leftJoinAndSelect('reviewPost.pinReviewPosts', 'pinReviewPost')
+      .leftJoinAndSelect('reviewPost.user', 'user')
+      .leftJoinAndSelect('reviewPost.ktPlace', 'ktPlace')
+      .leftJoinAndSelect('reviewPost.sktPlace', 'sktPlace')
+      .leftJoinAndSelect('reviewPost.extraPlace', 'extraPlace')
+      .where('reviewPost.idx = :idx', { idx: reviewPostIdx });
+
+    const reviewPost = await queryBuilder.getOne();
+    if (reviewPost) {
+      return new ReviewPostEntity(reviewPost);
+    }
   }
 
   async getReviewPostsByPlace(placeType: PlaceType, place: PlaceEntity, query: ListFilterQueryDto): Promise<[ReviewPostEntity[], number]> {

@@ -48,23 +48,13 @@ export class ReviewPostService {
     return reviewPost;
   }
 
-  async getReviewPost(idx: number, placeType: PlaceType, reviewPostIdx: number): Promise<ReviewPostEntity> {
-    const place = await this.placeService.getPlaceAllInfo(idx, placeType);
+  async getReviewPost(user: UserEntity, placeIdx: number, placeType: PlaceType, reviewPostIdx: number): Promise<ReviewPostEntity> {
+    const place = await this.placeService.getPlaceAllInfo(placeIdx, placeType);
     if (!place) {
       throw new ClientRequestException(ERROR_CODE.ERR_0002001, HttpStatus.BAD_REQUEST);
     }
 
-    const reviewPost = await this.reviewPostRepository.getReviewPost({ idx: reviewPostIdx }, [
-      'replies',
-      'replies.user',
-      'reviewPostImages',
-      'pinReviewPosts',
-      'pinReviewPosts.user',
-      'user',
-      'sktPlace',
-      'ktPlace',
-      'extraPlace',
-    ]);
+    const reviewPost = await this.reviewPostRepository.getReviewPostByIdx(user, reviewPostIdx);
     if (!reviewPost) {
       throw new ClientRequestException(ERROR_CODE.ERR_0008001, HttpStatus.BAD_REQUEST);
     }
@@ -77,7 +67,7 @@ export class ReviewPostService {
   }
 
   async deleteReviewPost(user: UserEntity, idx: number, placeType: PlaceType, reviewPostIdx: number) {
-    const reviewPost = await this.getReviewPost(idx, placeType, reviewPostIdx);
+    const reviewPost = await this.getReviewPost(user, idx, placeType, reviewPostIdx);
     if (reviewPost.user.idx !== user.idx) {
       throw new ClientRequestException(ERROR_CODE.ERR_0000005, HttpStatus.FORBIDDEN);
     }
@@ -89,7 +79,7 @@ export class ReviewPostService {
   }
 
   async modifyReviewPost(user: UserEntity, idx: number, placeType: PlaceType, reviewPostIdx: number, content: string) {
-    const reviewPost = await this.getReviewPost(idx, placeType, reviewPostIdx);
+    const reviewPost = await this.getReviewPost(user, idx, placeType, reviewPostIdx);
     if (reviewPost.user.idx !== user.idx) {
       throw new ClientRequestException(ERROR_CODE.ERR_0000005, HttpStatus.FORBIDDEN);
     }

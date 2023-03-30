@@ -10,6 +10,7 @@ import { GetReplyIdxParamDto } from './reply.dto';
 import { SlackService } from '../app/slack/slack.service';
 import { ReplyReportService } from '../reply-report/reply-report.service';
 import { DataSource, QueryRunner } from 'typeorm';
+import { Reply } from '@lib/entity/reply/reply.entity';
 
 @Injectable()
 export class ReplyService {
@@ -30,7 +31,7 @@ export class ReplyService {
     replyLevel: number,
     mainReplyIdx: number,
   ) {
-    const reviewPost = await this.reviewPostService.getReviewPost(placeIdx, placeType, reviewPostIdx);
+    const reviewPost = await this.reviewPostService.getReviewPost(user, placeIdx, placeType, reviewPostIdx);
     const reply = this.replyRepository.createInstance({
       user,
       reviewPost,
@@ -49,6 +50,14 @@ export class ReplyService {
     }
 
     await this.addReply(user, param.idx, param.type, param.reviewPostIdx, content, reply.level + 1, reply.idx);
+  }
+
+  async getReplyByIdx(idx: number): Promise<Reply> {
+    const reply = await this.replyRepository.getReply({ idx }, ['user', 'reviewPost']);
+    if (!reply) {
+      throw new ClientRequestException(ERROR_CODE.ERR_0009001, HttpStatus.BAD_REQUEST);
+    }
+    return reply;
   }
 
   async deleteReply(user: UserEntity, replyIdx: number) {

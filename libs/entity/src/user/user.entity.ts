@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { PinPlace } from '../pin-place/pin-place.entity';
+import { PinReply } from '../pin-reply/pin-reply.entity';
 import { PinReviewPost } from '../pin-review-post/pin-review-post.entity';
 import { ReplyReport } from '../reply-report/reply-report.entity';
 import { Reply } from '../reply/reply.entity';
@@ -38,6 +39,9 @@ export class User {
 
   @OneToMany(() => PinPlace, (pinPlace) => pinPlace.user)
   pinPlaces: PinPlace[];
+
+  @OneToMany(() => PinReply, (pinReply) => pinReply.user)
+  pinReplies: PinReply[];
 
   @OneToMany(() => PinReviewPost, (pinReviewPost) => pinReviewPost.user)
   pinReviewPosts: PinReviewPost[];

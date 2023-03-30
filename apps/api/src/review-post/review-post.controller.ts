@@ -49,7 +49,7 @@ export class ReviewPostController {
     const user = req.extras.getUser();
     const { idx, type, reviewPostIdx } = param;
     const pinReviewPostIdxMap = await this.pinReviewPostService.getMapPinReviewPostIdx(user);
-    const reviewPost = await this.reviewPostService.getReviewPost(idx, type, reviewPostIdx);
+    const reviewPost = await this.reviewPostService.getReviewPost(user, idx, type, reviewPostIdx);
     return new ReviewPostResponseDto(reviewPost, pinReviewPostIdxMap);
   }
 
