@@ -26,7 +26,7 @@ export class SentryService {
   }
 
   private send(jobType: JobType, title: string, value: string) {
-    const webhook = new IncomingWebhook(config.SLACK_SENTRY_SCHEDULER_WEBHOOK);
+    const webhook = new IncomingWebhook(config.slackSentrySchedulerWebhook);
     webhook.send({
       attachments: [
         {

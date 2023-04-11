@@ -101,10 +101,10 @@ export class ConfigService {
   get sktCongestionApiKey(): string {
     return this.envConfig.SKT_CONGESTION_API_KEY;
   }
-  get SLACK_SENTRY_SCHEDULER_WEBHOOK(): string {
+  get slackSentrySchedulerWebhook(): string {
     return this.envConfig.SLACK_SENTRY_SCHEDULER_WEBHOOK;
   }
-  get SENTRY_SCHEDULER_DSN(): string {
+  get sentrySchedulerDsn(): string {
     return this.envConfig.SENTRY_SCHEDULER_DSN;
   }
 }
